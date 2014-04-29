@@ -48,7 +48,7 @@ public class ExTDB1
         // Get model inside the transaction
         Model model = dataset.getDefaultModel() ;
     	System.out.println("before list statement...");
-
+/////
         StmtIterator iterator=model.listStatements();
     	System.out.println("after list statement...");
 
