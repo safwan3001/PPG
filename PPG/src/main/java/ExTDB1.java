@@ -20,11 +20,24 @@
 
 import java.util.Iterator;
 
+
+
+
+
+
+
+
+import com.hp.hpl.jena.ontology.OntModel;
 import com.hp.hpl.jena.query.Dataset ;
 import com.hp.hpl.jena.query.ReadWrite ;
+import com.hp.hpl.jena.rdf.model.InfModel;
 import com.hp.hpl.jena.rdf.model.Model;
+import com.hp.hpl.jena.rdf.model.ModelFactory;
+import com.hp.hpl.jena.rdf.model.Property;
 import com.hp.hpl.jena.rdf.model.ResIterator;
 import com.hp.hpl.jena.rdf.model.StmtIterator;
+import com.hp.hpl.jena.reasoner.Reasoner;
+import com.hp.hpl.jena.reasoner.ReasonerRegistry;
 import com.hp.hpl.jena.tdb.TDBFactory;
 
 /** Example of creating a TDB-backed model.
@@ -46,17 +59,36 @@ public class ExTDB1
         Dataset dataset = TDBFactory.createDataset(directory) ;
         //dataset.begin(ReadWrite.READ) ;
         // Get model inside the transaction
+      
         Model model = dataset.getDefaultModel() ;
-    	System.out.println("before list statement...");
-/////
-        StmtIterator iterator=model.listStatements();
-    	System.out.println("after list statement...");
+        
+        Reasoner reasoner = ReasonerRegistry.getOWLReasoner();
+        //To enale derivation     reasoner.setDerivationLogging(true);
 
+
+        InfModel infModel=ModelFactory.createInfModel(reasoner, model);
+        
+        
+        //getting the deduced statements using  getDeductionsModel()
+        Model dedModel=infModel.getDeductionsModel();
+        
+    	System.out.println("The model contains "+model.size()+" statement");
+    	
+    	System.out.println("The deduced model contains "+dedModel.size()+" statement");
+
+    	
+    	//System.out.println("The inference model contains "+infModel.size()+" statement");
+
+   	
+       /* StmtIterator iterator=model.listStatements();
+
+        Property x=model.getProperty("*");
+        System.out.println(""+x);
         while (iterator.hasNext())
         {
         	System.out.println(iterator.nextStatement().getPredicate().toString());
            // model.listSubjectsWithProperty(arg0, arg1, arg2);
-        }
+        }*/
 
        /* System.out.println(model.size());
         StmtIterator r=model.listStatements();
@@ -65,12 +97,13 @@ public class ExTDB1
             		r.nextStatement().getPredicate().toString()+":"+
             		r.nextStatement().getObject().toString());
         }*/
+        
+        //Finish the transaction - if a write transaction and commit() has not been called, then abort
         dataset.end() ;
 
         
-        // ... do work ...
         
-        // Close the dataset.
+        // Close the dataset, potentially releasing any associated resources.
         dataset.close();
         
     }
