@@ -68,7 +68,7 @@ public class ExTDB1
 
         InfModel infModel=ModelFactory.createInfModel(reasoner, model);
         
-        
+        //
         //getting the deduced statements using  getDeductionsModel()
         Model dedModel=infModel.getDeductionsModel();
         
