@@ -20,12 +20,7 @@
 
 import java.util.Iterator;
 
-
-
-
-
-
-
+import javax.swing.Timer;
 
 import com.hp.hpl.jena.ontology.OntModel;
 import com.hp.hpl.jena.query.Dataset ;
@@ -52,8 +47,10 @@ import com.hp.hpl.jena.tdb.TDBFactory;
 
 public class ExTDB1
 {
-    public static void main(String... argv)
+    public static void main(String[] args)
     {
+    	long startTime = System.currentTimeMillis();
+    	
         // Direct way: Make a TDB-back Jena model in the named directory.
         String directory = "D:/TDB_Database" ;
         Dataset dataset = TDBFactory.createDataset(directory) ;
@@ -70,11 +67,11 @@ public class ExTDB1
         
         //
         //getting the deduced statements using  getDeductionsModel()
-        Model dedModel=infModel.getDeductionsModel();
+        //Model dedModel=infModel.getDeductionsModel();
         
     	System.out.println("The model contains "+model.size()+" statement");
     	
-    	System.out.println("The deduced model contains "+dedModel.size()+" statement");
+    	//System.out.println("The deduced model contains "+dedModel.size()+" statement");
 
     	
     	//System.out.println("The inference model contains "+infModel.size()+" statement");
@@ -105,6 +102,10 @@ public class ExTDB1
         
         // Close the dataset, potentially releasing any associated resources.
         dataset.close();
+        long endTime   = System.currentTimeMillis();
+    	long totalTime = endTime - startTime;
+    	System.out.println(totalTime);
+
         
     }
 }
