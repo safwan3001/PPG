@@ -1,8 +1,15 @@
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.io.PrintStream;
+import java.io.PrintWriter;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Set;
+
 import com.hp.hpl.jena.query.Dataset;
 import com.hp.hpl.jena.rdf.model.InfModel;
 import com.hp.hpl.jena.rdf.model.Model;
@@ -18,7 +25,7 @@ public class DbpediaTest {
 
 	public static void main(String[] args) throws FileNotFoundException, IOException, ClassNotFoundException 
 	{
-		DBPedia dbPediaObject=new DBPedia("d:\\test.txt","D:/TDB_Database");
+		DBPedia dbPediaObject=new DBPedia("d:\\predicateList.txt","d:\\predicateScop.txt","D:/TDB_Database");
 
 		long startTime = System.currentTimeMillis();	
 
@@ -32,41 +39,33 @@ public class DbpediaTest {
 		//getting the deduced statements using  getDeductionsModel()
 		//Model dedModel=infModel.getDeductionsModel();
 
-		System.out.println("The model contains "+dbPediaObject.getModel().size()+" statement");   
+		//System.out.println("The model contains "+dbPediaObject.getModel().size()+" statement");   
 
-		dbPediaObject.writePredicateHashSet();
+		dbPediaObject.writePredicate();
 		/// to find the intersection between two sets we sue retainAll(collection) and we pass a collection object so we will get back 
 		//Retains only the elements in this set that are contained in the specified collection (optional operation). In other words, removes from this
 		//set all of its elements that are not contained in the specified collection.If the specified collection is also a set, this operation effectively
 		//modifies this set so that its value is the intersection of the two sets.
 
 
+		System.out.println("Number Of predicates in the model is "+dbPediaObject.readPredicate().size());
+		dbPediaObject.writePredicateScope();
+		HashSet<HashMap<String,HashSet<String>>> predicateScope=dbPediaObject.readPredicateScope();
 		
-		int counter=0;
-		for (String predicate : dbPediaObject.readPredicateHashSet()){
-			System.out.println("inside for statement");
-			HashMap attHashMap=new HashMap();
-
-			if (counter<1){
-				System.out.println("inside if statement");
-				ResIterator subjectsList=dbPediaObject.getModel().listSubjectsWithProperty(dbPediaObject.getModel().getProperty(predicate));
-				//System.out.println("The scop of the predicate "+predicate+" contains "+subjectsList.toSet().size()+" element");
-				attHashMap.put(predicate,subjectsList.toSet());
-				System.out.println(attHashMap.toString());
-				counter++;
-			}
-			else{
-				System.out.println("inside else statement");
-
-				break;
-			}
-		}
+		/*for(HashMap x : predicateScope){
+			System.out.println(x.toString());
+			break;
+			
+		}*/
+		//System.out.println(predicateScope.toString());
+		
+		System.out.println("Number of predicates with scope is "+dbPediaObject.readPredicateScope().size());
 
 		dbPediaObject.closeDataSet();
 		
 		long endTime   = System.currentTimeMillis();
 		long totalTime = endTime - startTime;
-		System.out.println("The total time for system to run is "+totalTime/1000);     
+		System.out.println("The total time for system to run is "+totalTime/1000+" Second");     
 	}
 }
 
