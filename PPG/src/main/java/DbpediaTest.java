@@ -25,7 +25,7 @@ public class DbpediaTest {
 
 	public static void main(String[] args) throws FileNotFoundException, IOException, ClassNotFoundException 
 	{
-		DBPedia dbPediaObject=new DBPedia("d:\\predicateList.txt","d:\\predicateScop.txt","D:/TDB_Database");
+		DBPedia dbPediaObject=new DBPedia("d:\\predicateList.txt","d:\\predicateScop","D:/TDB_Database");
 
 		long startTime = System.currentTimeMillis();	
 
@@ -49,8 +49,9 @@ public class DbpediaTest {
 
 
 		System.out.println("Number Of predicates in the model is "+dbPediaObject.readPredicate().size());
-		dbPediaObject.writePredicateScope();
-		HashSet<HashMap<String,HashSet<String>>> predicateScope=dbPediaObject.readPredicateScope();
+		dbPediaObject.writePredicateScope("predicateScop1");
+		//dbPediaObject.getPredicateScope();
+		//HashSet<HashMap<String,HashSet<String>>> predicateScope=dbPediaObject.readPredicateScope();
 		
 		/*for(HashMap x : predicateScope){
 			System.out.println(x.toString());
