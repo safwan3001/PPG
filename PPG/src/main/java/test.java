@@ -1,7 +1,12 @@
+import java.io.BufferedWriter;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.PrintWriter;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
@@ -18,18 +23,41 @@ public class test {
     	System.out.println(attHashMap.toString());
     	
     	
-    	HashSet<HashMap<String,Set>> test=new HashSet<HashMap<String,Set>>();
+    	HashSet<HashMap<String,HashSet<String>>> test=new HashSet<HashMap<String,HashSet<String>>>();
     	
-    	HashMap<String,Set> testHashMap=new HashMap<String,Set>();
+    	HashMap<String,HashSet<String>> testHashMap=new HashMap<String,HashSet<String>>();
     	HashSet testHashSet=new HashSet();
     	testHashSet.add(1);
-    	testHashMap.put("qqqqq",testHashSet);
+    	testHashSet.add(2);
+    	testHashSet.add(3);
+    	testHashMap.put("Safwan",testHashSet);
     	
-    	/*test.add(new HashMap("yyyyyy",HashSet);
-    	test.add("eeeeee");
-    	System.out.println(test.toString());*/
+    	test.add(testHashMap);
     	
-    	ObjectInputStream ois = new ObjectInputStream(new FileInputStream("d:/test.txt"));
+    	testHashMap=new HashMap<String,HashSet<String>>();
+    	testHashSet=new HashSet();
+    	testHashSet.add(1);
+    	testHashSet.add(2);
+    	testHashSet.add(3);
+    	testHashMap.put("Ali",testHashSet);
+    	
+    	test.add(testHashMap);
+    	
+    	System.out.println(testHashMap.toString());
+    	System.out.println(test.toString());
+
+    	
+    	/*ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream("d:/test.txt"));
+		oos.writeObject(test);*/
+		
+		
+    	PrintWriter fstream = new PrintWriter(new FileWriter("d:\\test.txt"));
+		BufferedWriter out = new BufferedWriter(fstream);
+		out.write(test.toString());
+		out.close();
+    	
+    	//ObjectInputStream ois = new ObjectInputStream(new FileInputStream("d:/test.txt"));
+    	
 		//String readHashSet=(String)ois.readObject();
 		//System.out.println(readHashSet);
 	}

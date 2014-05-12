@@ -25,7 +25,7 @@ public class DbpediaTest {
 
 	public static void main(String[] args) throws FileNotFoundException, IOException, ClassNotFoundException 
 	{
-		DBPedia dbPediaObject=new DBPedia("d:\\predicateList.txt","d:\\predicateScop","D:/TDB_Database");
+		DBPedia dbPediaObject=new DBPedia("d:\\predicateList.txt","d:\\predicateScope","D:/TDB_Database");
 
 		long startTime = System.currentTimeMillis();	
 
@@ -39,17 +39,17 @@ public class DbpediaTest {
 		//getting the deduced statements using  getDeductionsModel()
 		//Model dedModel=infModel.getDeductionsModel();
 
-		//System.out.println("The model contains "+dbPediaObject.getModel().size()+" statement");   
+		System.out.println("The model contains "+dbPediaObject.getModel().size()+" statement");   
 
-		dbPediaObject.writePredicate();
+		//dbPediaObject.writePredicate();
 		/// to find the intersection between two sets we sue retainAll(collection) and we pass a collection object so we will get back 
 		//Retains only the elements in this set that are contained in the specified collection (optional operation). In other words, removes from this
 		//set all of its elements that are not contained in the specified collection.If the specified collection is also a set, this operation effectively
 		//modifies this set so that its value is the intersection of the two sets.
 
 
-		System.out.println("Number Of predicates in the model is "+dbPediaObject.readPredicate().size());
-		dbPediaObject.writePredicateScope("predicateScop1");
+		//System.out.println("Number Of predicates in the model is "+dbPediaObject.readPredicate().size());
+		//dbPediaObject.writePredicateScope("predicateScop1");
 		//dbPediaObject.getPredicateScope();
 		//HashSet<HashMap<String,HashSet<String>>> predicateScope=dbPediaObject.readPredicateScope();
 		
@@ -59,8 +59,8 @@ public class DbpediaTest {
 			
 		}*/
 		//System.out.println(predicateScope.toString());
-		
-		System.out.println("Number of predicates with scope is "+dbPediaObject.readPredicateScope().size());
+		dbPediaObject.getPredicateScope();
+		//System.out.println("Number of predicates with scope is "+dbPediaObject.readPredicateScope().size());
 
 		dbPediaObject.closeDataSet();
 		
