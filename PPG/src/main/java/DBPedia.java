@@ -122,37 +122,52 @@ public class DBPedia
 		System.out.println("calculating scope process begin for "+predicateList.size()+" predicate ");
 		for (String predicate : predicateList){
 
-		//	if (counter<25){
-				System.out.println("1 "+predicate);
-				ResIterator subjectsList=this.getModel().listSubjectsWithProperty(this.getModel().getProperty(predicate));
-				//System.out.println("The scop of the predicate "+predicate+" contains "+subjectsList.toSet().size()+" element");
-				//System.out.println("2 "+predicate);
-				resourceHashSet=(HashSet<Resource>) subjectsList.toSet();
-				//System.out.println("3 "+predicate);
+			//	if (counter<25){
+			//System.out.println("1 "+predicate);
+			ResIterator subjectsList=this.getModel().listSubjectsWithProperty(this.getModel().getProperty(predicate));
+			//System.out.println("The scop of the predicate "+predicate+" contains "+subjectsList.toSet().size()+" element");
+			//System.out.println("2 "+predicate);
+			resourceHashSet=(HashSet<Resource>) subjectsList.toSet();
+			//System.out.println("3 "+predicate);
+			stringHashSet=new HashSet<String>();
+			//System.out.println("4 "+predicate);
+			for (Resource resource:resourceHashSet){
+				stringHashSet.add(resource.toString());
+			}
+			//System.out.println("5 "+predicate);
+			predicateScopeHashMap.put(predicate, stringHashSet);
+			//System.out.println("6 "+predicate);
+			predicateScopeHashSet.add(predicateScopeHashMap);
+			predicateScopeHashMap=new HashMap<String,HashSet<String>>();
+			//System.out.println("7 "+predicate);
+			float numberOfFilesFloat=(float) predicateList.size()/25;
+			int numberOfFilesInteger=(int) Math.ceil(numberOfFilesFloat);
+			//System.out.println("size is"+predicateList.size());
+			//System.out.println("dddd"+numberOfFilesInteger);
+			counter++;
+			System.out.println("The counter Values is "+counter);
+
+			if ( predicateScopeHashSet.size()==25 ){
+				predicateFileScopeNumber++;
+				writePredicateScope(predicateScopeHashSetDirectory+"\\predicateScop"+predicateFileScopeNumber);
+				System.out.println("the size of the written hashset is "+predicateScopeHashSet.size());
+
+				resourceHashSet=new HashSet<Resource>();
 				stringHashSet=new HashSet<String>();
-				//System.out.println("4 "+predicate);
-				for (Resource resource:resourceHashSet){
-					stringHashSet.add(resource.toString());
-				}
-				//System.out.println("5 "+predicate);
-				predicateScopeHashMap.put(predicate, stringHashSet);
-				//System.out.println("6 "+predicate);
-				predicateScopeHashSet.add(predicateScopeHashMap);
-				predicateScopeHashMap=new HashMap<String,HashSet<String>>();
-				//System.out.println("7 "+predicate);
-				System.out.println("The counter Values is "+counter);
-				counter++;
-				if (counter>25){
-					predicateFileScopeNumber++;
-					writePredicateScope(predicateScopeHashSetDirectory+"\\predicateScop"+predicateFileScopeNumber);
-					System.out.println("the size of the written hashset is "+predicateScopeHashSet.size());
-					
-					resourceHashSet=new HashSet<Resource>();
-					stringHashSet=new HashSet<String>();
-					predicateScopeHashSet=new HashSet<HashMap<String,HashSet<String>>>();
-					counter=0;
-				}
-		//	}
+				predicateScopeHashSet=new HashSet<HashMap<String,HashSet<String>>>();
+				//counter=0;
+			}
+			else if(predicateFileScopeNumber==numberOfFilesInteger-1 && predicateList.size()==counter){
+				predicateFileScopeNumber++;
+				writePredicateScope(predicateScopeHashSetDirectory+"\\predicateScop"+predicateFileScopeNumber);
+				System.out.println("the size of the written hashset is "+predicateScopeHashSet.size());
+				resourceHashSet=new HashSet<Resource>();
+				stringHashSet=new HashSet<String>();
+				predicateScopeHashSet=new HashSet<HashMap<String,HashSet<String>>>();
+
+			}
+
+			//	}
 			/*else{
 				predicateFileScopeNumber++;
 				ResIterator subjectsList=this.getModel().listSubjectsWithProperty(this.getModel().getProperty(predicate));
@@ -166,7 +181,7 @@ public class DBPedia
 
 				writePredicateScope(predicateScopeHashSetDirectory+"\\predicateScop"+predicateFileScopeNumber);
 				System.out.println("the size of the written hashset is "+predicateScopeHashSet.size());
-				
+
 				resourceHashSet=new HashSet<Resource>();
 				stringHashSet=new HashSet<String>();
 				predicateScopeHashSet=new HashSet<HashMap<String,HashSet<String>>>();
@@ -194,21 +209,23 @@ public class DBPedia
 
 	public HashSet<HashMap<String,HashSet<String>>> readPredicateScope() throws FileNotFoundException, IOException, ClassNotFoundException{
 
+		HashSet<HashMap<String,HashSet<String>>> readPredicateScopeHash=null;
 		for (File predicateScopFile: this.getPredicateScopFile().listFiles())
 		{
+			readPredicateScopeHash=new HashSet<HashMap<String,HashSet<String>>>();
 			System.out.println("Reading the file"+predicateScopFile.getPath());
 			ObjectInputStream ois = new ObjectInputStream(new FileInputStream(predicateScopFile.getPath()));
-			this.predicateScopeHashSet=(HashSet<HashMap<String,HashSet<String>>>) ois.readObject();
-			System.out.println("Number of predicates in the file "+predicateScopFile.getPath()+" is "+predicateScopeHashSet.size());
-			saveOutputToFile(predicateScopeHashSet.toString(),predicateScopFile.getPath()+".txt");
-		
+			readPredicateScopeHash=(HashSet<HashMap<String,HashSet<String>>>) ois.readObject();
+			System.out.println("Number of predicates in the file "+predicateScopFile.getPath()+" is "+readPredicateScopeHash.size());
+			saveOutputToFile(readPredicateScopeHash.toString(),predicateScopFile.getPath()+".txt");
+
 		}
 
-		return this.predicateScopeHashSet;
+		return readPredicateScopeHash;
 
 
 	}
-	
+
 	public void saveOutputToFile(String data,String fileName) throws IOException{
 		PrintWriter fstream = new PrintWriter(new FileWriter(fileName));
 		BufferedWriter out = new BufferedWriter(fstream);

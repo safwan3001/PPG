@@ -46,6 +46,14 @@ public class test {
     	System.out.println(testHashMap.toString());
     	System.out.println(test.toString());
 
+    	float x=(float)1374/25;
+    	System.out.println("x is "+x);
+
+    	System.out.println("testing 1374/25 "+Math.ceil(x));
+    	System.out.println(Math.ceil(54.9));
+
+
+    	
     	
     	/*ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream("d:/test.txt"));
 		oos.writeObject(test);*/

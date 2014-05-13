@@ -21,7 +21,7 @@ import com.hp.hpl.jena.reasoner.ReasonerRegistry;
 import com.hp.hpl.jena.tdb.TDBFactory;
 
 
-public class DbpediaTest {
+public class DBPediaTest {
 
 	public static void main(String[] args) throws FileNotFoundException, IOException, ClassNotFoundException 
 	{
@@ -39,7 +39,7 @@ public class DbpediaTest {
 		//getting the deduced statements using  getDeductionsModel()
 		//Model dedModel=infModel.getDeductionsModel();
 
-		System.out.println("The model contains "+dbPediaObject.getModel().size()+" statement");   
+		//System.out.println("The model contains "+dbPediaObject.getModel().size()+" statement");   
 
 		//dbPediaObject.writePredicate();
 		/// to find the intersection between two sets we sue retainAll(collection) and we pass a collection object so we will get back 
@@ -59,7 +59,7 @@ public class DbpediaTest {
 			
 		}*/
 		//System.out.println(predicateScope.toString());
-		dbPediaObject.getPredicateScope();
+		//dbPediaObject.getPredicateScope();
 		//System.out.println("Number of predicates with scope is "+dbPediaObject.readPredicateScope().size());
 
 		dbPediaObject.closeDataSet();
