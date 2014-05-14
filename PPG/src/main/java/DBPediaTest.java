@@ -60,7 +60,7 @@ public class DBPediaTest {
 		}*/
 		//System.out.println(predicateScope.toString());
 		//dbPediaObject.getPredicateScope();
-		//System.out.println("Number of predicates with scope is "+dbPediaObject.readPredicateScope().size());
+		System.out.println("Number of predicates with scope is "+dbPediaObject.readPredicateScope().size());
 
 		dbPediaObject.closeDataSet();
 		

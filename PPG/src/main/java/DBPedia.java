@@ -123,7 +123,7 @@ public class DBPedia
 		for (String predicate : predicateList){
 
 			//	if (counter<25){
-			//System.out.println("1 "+predicate);
+			System.out.println("1 "+predicate);
 			ResIterator subjectsList=this.getModel().listSubjectsWithProperty(this.getModel().getProperty(predicate));
 			//System.out.println("The scop of the predicate "+predicate+" contains "+subjectsList.toSet().size()+" element");
 			//System.out.println("2 "+predicate);
@@ -166,27 +166,6 @@ public class DBPedia
 				predicateScopeHashSet=new HashSet<HashMap<String,HashSet<String>>>();
 
 			}
-
-			//	}
-			/*else{
-				predicateFileScopeNumber++;
-				ResIterator subjectsList=this.getModel().listSubjectsWithProperty(this.getModel().getProperty(predicate));
-				resourceHashSet=(HashSet<Resource>) subjectsList.toSet();
-				stringHashSet=new HashSet<String>();
-				for (Resource resource:resourceHashSet){
-					stringHashSet.add(resource.toString());
-				}
-				predicateScopeHashMap.put(predicate, stringHashSet);
-				predicateScopeHashSet.add(predicateScopeHashMap);
-
-				writePredicateScope(predicateScopeHashSetDirectory+"\\predicateScop"+predicateFileScopeNumber);
-				System.out.println("the size of the written hashset is "+predicateScopeHashSet.size());
-
-				resourceHashSet=new HashSet<Resource>();
-				stringHashSet=new HashSet<String>();
-				predicateScopeHashSet=new HashSet<HashMap<String,HashSet<String>>>();
-				counter=0;
-			}*/
 		}
 	}
 
@@ -210,6 +189,7 @@ public class DBPedia
 	public HashSet<HashMap<String,HashSet<String>>> readPredicateScope() throws FileNotFoundException, IOException, ClassNotFoundException{
 
 		HashSet<HashMap<String,HashSet<String>>> readPredicateScopeHash=null;
+		HashSet<String> modelPredicates=readPredicate();
 		for (File predicateScopFile: this.getPredicateScopFile().listFiles())
 		{
 			readPredicateScopeHash=new HashSet<HashMap<String,HashSet<String>>>();
@@ -217,13 +197,23 @@ public class DBPedia
 			ObjectInputStream ois = new ObjectInputStream(new FileInputStream(predicateScopFile.getPath()));
 			readPredicateScopeHash=(HashSet<HashMap<String,HashSet<String>>>) ois.readObject();
 			System.out.println("Number of predicates in the file "+predicateScopFile.getPath()+" is "+readPredicateScopeHash.size());
-			saveOutputToFile(readPredicateScopeHash.toString(),predicateScopFile.getPath()+".txt");
+			//saveOutputToFile(readPredicateScopeHash.toString(),predicateScopFile.getPath()+".txt");
+			int counter=0;
+			for (String predicate : modelPredicates){
+				System.out.println("predicate is "+predicate);
+				for (HashMap hashSetElement: readPredicateScopeHash){
+					//System.out.println("scope of the predicate "+hashSetElement.get(predicate).toString());
+					System.out.println("scope of the predicate "+hashSetElement.keySet());
+					break;
+				}
+				break;
+			}
+			
+			break;
 
 		}
 
 		return readPredicateScopeHash;
-
-
 	}
 
 	public void saveOutputToFile(String data,String fileName) throws IOException{

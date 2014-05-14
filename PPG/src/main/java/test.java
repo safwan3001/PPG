@@ -41,6 +41,9 @@ public class test {
     	testHashSet.add(3);
     	testHashMap.put("Ali",testHashSet);
     	
+    	System.out.println(testHashSet);
+
+    	
     	test.add(testHashMap);
     	
     	System.out.println(testHashMap.toString());
