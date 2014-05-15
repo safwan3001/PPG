@@ -9,6 +9,7 @@ import java.io.ObjectOutputStream;
 import java.io.PrintWriter;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Set;
 
 import com.hp.hpl.jena.rdf.model.Property;
@@ -17,25 +18,27 @@ import com.hp.hpl.jena.rdf.model.Property;
 public class test {
 	
 	public static void main(String args[]) throws FileNotFoundException, IOException, ClassNotFoundException{
-    	HashMap attHashMap=new HashMap();
+    	
+		HashMap attHashMap=new HashMap();
     	attHashMap.put(1, "Ali");
     	attHashMap.put(1, "mmm");
     	System.out.println(attHashMap.toString());
     	
     	
-    	HashSet<HashMap<String,HashSet<String>>> test=new HashSet<HashMap<String,HashSet<String>>>();
+    	LinkedHashSet<HashMap<String,LinkedHashSet<String>>> test=new LinkedHashSet<HashMap<String,LinkedHashSet<String>>>();
     	
-    	HashMap<String,HashSet<String>> testHashMap=new HashMap<String,HashSet<String>>();
-    	HashSet testHashSet=new HashSet();
+    	HashMap<String,LinkedHashSet<String>> testHashMap=new HashMap<String,LinkedHashSet<String>>();
+    	LinkedHashSet testHashSet=new LinkedHashSet();
     	testHashSet.add(1);
-    	testHashSet.add(2);
-    	testHashSet.add(3);
+    	testHashSet.add(1);
+    	testHashSet.add(1);
+    	LinkedHashSet xx=new LinkedHashSet(testHashSet);
     	testHashMap.put("Safwan",testHashSet);
     	
     	test.add(testHashMap);
     	
-    	testHashMap=new HashMap<String,HashSet<String>>();
-    	testHashSet=new HashSet();
+    	testHashMap=new HashMap<String,LinkedHashSet<String>>();
+    	testHashSet=new LinkedHashSet();
     	testHashSet.add(1);
     	testHashSet.add(2);
     	testHashSet.add(3);
@@ -56,7 +59,10 @@ public class test {
     	System.out.println(Math.ceil(54.9));
 
 
-    	
+    	String myString="http://purl.org/dc/terms/subject";
+    	myString=myString.replace("/","_").replace(":","_").replace("//", "_");
+    	System.out.println(myString);
+
     	
     	/*ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream("d:/test.txt"));
 		oos.writeObject(test);*/
@@ -66,7 +72,25 @@ public class test {
 		BufferedWriter out = new BufferedWriter(fstream);
 		out.write(test.toString());
 		out.close();
+		
+		HashSet<String> s1=new HashSet<String>();
+		s1.add("a");
+		s1.add("b");
+		s1.add("c");
     	
+		HashSet<String> s2=new HashSet<String>();
+		s2.add("a");
+		s2.add("b");
+		s2.add("c");
+		s2.add("d");
+		
+		HashSet<String> intersectionHashSet=new HashSet<String>(s2);
+		
+
+		intersectionHashSet.retainAll(s1);
+		System.out.println("The intersectionHashSet value is "+intersectionHashSet);
+		System.out.println("The intersectionHashSet value is "+intersectionHashSet.retainAll(s1));
+
     	//ObjectInputStream ois = new ObjectInputStream(new FileInputStream("d:/test.txt"));
     	
 		//String readHashSet=(String)ois.readObject();

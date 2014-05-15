@@ -29,7 +29,7 @@ public class DBPediaTest {
 
 		long startTime = System.currentTimeMillis();	
 
-		Reasoner reasoner = ReasonerRegistry.getOWLReasoner();
+		//Reasoner reasoner = ReasonerRegistry.getOWLReasoner();
 		// Reasoner reasoner = ReasonerRegistry.getRDFSReasoner();
 
 		//To enale derivation     reasoner.setDerivationLogging(true);
@@ -59,7 +59,8 @@ public class DBPediaTest {
 			
 		}*/
 		//System.out.println(predicateScope.toString());
-		//dbPediaObject.getPredicateScope();
+		//dbPediaObject.writePredicate();
+		dbPediaObject.getPredicateScope();
 		System.out.println("Number of predicates with scope is "+dbPediaObject.readPredicateScope().size());
 
 		dbPediaObject.closeDataSet();

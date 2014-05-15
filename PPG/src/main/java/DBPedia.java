@@ -11,6 +11,8 @@ import java.io.PrintWriter;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.Set;
 
 import javax.swing.Timer;
@@ -33,9 +35,10 @@ import com.hp.hpl.jena.tdb.TDBFactory;
 public class DBPedia
 {
 	private int numberOfPredicates=0;
-	private HashSet<String> predicateStringHashSet;
-	private HashSet<Property> predicatePropertyHashSet;
-	private HashSet<HashMap<String,HashSet<String>>> predicateScopeHashSet;
+	private LinkedHashSet<String> predicateStringHashSet;
+	private LinkedHashSet<Property> predicatePropertyHashSet;
+	private LinkedHashMap<String,LinkedHashSet<String>> predicateScopeHashMap;
+	//private LinkedHashSet<LinkedHashMap<String,LinkedHashSet<String>>> predicateScopeHashSet;
 	private String predicateListHashSetDirectory;
 	private String predicateScopeHashSetDirectory;
 	private String DBDirectory;
@@ -53,9 +56,9 @@ public class DBPedia
 		dataset = TDBFactory.createDataset(DBDirectory);
 
 		this.model = dataset.getDefaultModel() ;
-		this.predicateStringHashSet=new HashSet<String>();
-		this.predicatePropertyHashSet=new HashSet<Property>();
-		this.predicateScopeHashSet=new HashSet<HashMap<String,HashSet<String>>>();
+		this.predicateStringHashSet=new LinkedHashSet<String>();
+		this.predicatePropertyHashSet=new LinkedHashSet<Property>();
+		this.predicateScopeHashMap=new LinkedHashMap<String,LinkedHashSet<String>>();
 		this.setPredicateListFile();
 		this.setPredicateScopFile();
 	}
@@ -67,10 +70,10 @@ public class DBPedia
 		// Close the dataset, potentially releasing any associated resources.
 		dataset.close();
 	}
-	public HashSet<String> readPredicate() throws ClassNotFoundException, IOException{
+	public LinkedHashSet<String> readPredicate() throws ClassNotFoundException, IOException{
 
 		ObjectInputStream ois = new ObjectInputStream(new FileInputStream(this.predicateListHashSetDirectory));
-		this.predicateStringHashSet=(HashSet<String>) ois.readObject();
+		this.predicateStringHashSet=(LinkedHashSet<String>) ois.readObject();
 		return this.predicateStringHashSet;
 
 	}
@@ -94,7 +97,7 @@ public class DBPedia
 
 	}
 
-	public HashSet<Property> getModelPredicates(Model model){
+	public LinkedHashSet<Property> getModelPredicates(Model model){
 
 		if(this.getPredicateListFile().exists()){
 			System.out.println("File already exists no need to check all predicates");
@@ -113,59 +116,51 @@ public class DBPedia
 	}
 
 	public void getPredicateScope() throws ClassNotFoundException, IOException{
-		int counter=0;
-		int predicateFileScopeNumber=0;
-		HashSet<Resource> resourceHashSet;
-		HashSet<String> stringHashSet;
-		HashMap<String,HashSet<String>> predicateScopeHashMap=new HashMap<String,HashSet<String>>();
-		HashSet<String> predicateList=this.readPredicate();
+
+		//int counter=0;
+		//int predicateFileScopeNumber=0;
+		//HashSet<Resource> resourceHashSet=null;
+		//LinkedHashSet<String> stringLinkedHashSet;
+		//LinkedHashSet<String> stringHashSet=null;
+		LinkedHashSet<String> predicateList=this.readPredicate();
 		System.out.println("calculating scope process begin for "+predicateList.size()+" predicate ");
 		for (String predicate : predicateList){
 
+			/*if(predicate.equals("http://purl.org/dc/terms/subject")){
+				continue;}*/
 			//	if (counter<25){
 			System.out.println("1 "+predicate);
 			ResIterator subjectsList=this.getModel().listSubjectsWithProperty(this.getModel().getProperty(predicate));
 			//System.out.println("The scop of the predicate "+predicate+" contains "+subjectsList.toSet().size()+" element");
 			//System.out.println("2 "+predicate);
-			resourceHashSet=(HashSet<Resource>) subjectsList.toSet();
+			HashSet<Resource> resourceHashSet=(HashSet<Resource>) subjectsList.toSet();
+			subjectsList=null;
+			//System.gc();
+
 			//System.out.println("3 "+predicate);
-			stringHashSet=new HashSet<String>();
+			LinkedHashSet<String> stringHashSet=new LinkedHashSet<String>();
 			//System.out.println("4 "+predicate);
 			for (Resource resource:resourceHashSet){
 				stringHashSet.add(resource.toString());
 			}
+			//resourceHashSet=null;
+			//System.gc();
 			//System.out.println("5 "+predicate);
-			predicateScopeHashMap.put(predicate, stringHashSet);
+			//stringLinkedHashSet=new LinkedHashSet<String>(stringHashSet);
+			//stringHashSet=null;
+			//LinkedHashMap<String,LinkedHashSet<String>> predicateScopeHashMap=new LinkedHashMap<String,LinkedHashSet<String>>();
+			this.predicateScopeHashMap.put(predicate, stringHashSet);
+			//stringHashSet=null;
+			//System.gc();
+
 			//System.out.println("6 "+predicate);
-			predicateScopeHashSet.add(predicateScopeHashMap);
-			predicateScopeHashMap=new HashMap<String,HashSet<String>>();
-			//System.out.println("7 "+predicate);
-			float numberOfFilesFloat=(float) predicateList.size()/25;
-			int numberOfFilesInteger=(int) Math.ceil(numberOfFilesFloat);
-			//System.out.println("size is"+predicateList.size());
-			//System.out.println("dddd"+numberOfFilesInteger);
-			counter++;
-			System.out.println("The counter Values is "+counter);
-
-			if ( predicateScopeHashSet.size()==25 ){
-				predicateFileScopeNumber++;
-				writePredicateScope(predicateScopeHashSetDirectory+"\\predicateScop"+predicateFileScopeNumber);
-				System.out.println("the size of the written hashset is "+predicateScopeHashSet.size());
-
-				resourceHashSet=new HashSet<Resource>();
-				stringHashSet=new HashSet<String>();
-				predicateScopeHashSet=new HashSet<HashMap<String,HashSet<String>>>();
-				//counter=0;
-			}
-			else if(predicateFileScopeNumber==numberOfFilesInteger-1 && predicateList.size()==counter){
-				predicateFileScopeNumber++;
-				writePredicateScope(predicateScopeHashSetDirectory+"\\predicateScop"+predicateFileScopeNumber);
-				System.out.println("the size of the written hashset is "+predicateScopeHashSet.size());
-				resourceHashSet=new HashSet<Resource>();
-				stringHashSet=new HashSet<String>();
-				predicateScopeHashSet=new HashSet<HashMap<String,HashSet<String>>>();
-
-			}
+			//predicateScopeHashSet.add(predicateScopeHashMap);
+			//predicateScopeHashMap=new LinkedHashMap<String,LinkedHashSet<String>>();
+			String fileName=predicate.replace("/","_").replace(":",";");
+			writePredicateScope(predicateScopeHashSetDirectory+"\\"+fileName);
+			this.predicateScopeHashMap=new LinkedHashMap<String,LinkedHashSet<String>>();
+			resourceHashSet=new LinkedHashSet<Resource>();
+			stringHashSet=new LinkedHashSet<String>();
 		}
 	}
 
@@ -181,45 +176,120 @@ public class DBPedia
 			System.out.println("Creating the predicate scope file and writing the hashSet on it");
 			ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(predicateScopeHashSetFileName));
 			System.out.println("write getPredicate scope to file");
-			oos.writeObject(predicateScopeHashSet);
+			oos.writeObject(this.predicateScopeHashMap);
 			oos.close();
 		}
 	}
 
-	public HashSet<HashMap<String,HashSet<String>>> readPredicateScope() throws FileNotFoundException, IOException, ClassNotFoundException{
+	public LinkedHashMap<String,LinkedHashSet<String>> readPredicateScope() throws FileNotFoundException, IOException, ClassNotFoundException{
 
-		HashSet<HashMap<String,HashSet<String>>> readPredicateScopeHash=null;
-		HashSet<String> modelPredicates=readPredicate();
-		for (File predicateScopFile: this.getPredicateScopFile().listFiles())
+		LinkedHashMap<String,LinkedHashSet<String>> readPredicateScopeHashMap=null;
+		LinkedHashSet<String> modelPredicates=readPredicate();
+
+		//for (String predicate : modelPredicates){
+
+		File[] filesPathArray=new File[this.getNumberOfPredicates()];
+		filesPathArray=this.getPredicateScopFile().listFiles();
+		int counter=0;
+		System.out.println("The size of the file array is "+filesPathArray.length);
+		for (File predicateScopFile: filesPathArray)
 		{
-			readPredicateScopeHash=new HashSet<HashMap<String,HashSet<String>>>();
-			System.out.println("Reading the file"+predicateScopFile.getPath());
+			readPredicateScopeHashMap=new LinkedHashMap<String,LinkedHashSet<String>>();
+			System.out.println("Reading the file "+predicateScopFile.getPath());
+			System.out.println("File name is "+predicateScopFile.getName());
+			String predicateName=predicateScopFile.getName().replace(";", ":").replace("_", "/");
+			System.out.println("Predicate name after fixing is "+predicateName);
+
 			ObjectInputStream ois = new ObjectInputStream(new FileInputStream(predicateScopFile.getPath()));
-			readPredicateScopeHash=(HashSet<HashMap<String,HashSet<String>>>) ois.readObject();
-			System.out.println("Number of predicates in the file "+predicateScopFile.getPath()+" is "+readPredicateScopeHash.size());
-			//saveOutputToFile(readPredicateScopeHash.toString(),predicateScopFile.getPath()+".txt");
-			int counter=0;
-			for (String predicate : modelPredicates){
-				System.out.println("predicate is "+predicate);
-				for (HashMap hashSetElement: readPredicateScopeHash){
-					//System.out.println("scope of the predicate "+hashSetElement.get(predicate).toString());
-					System.out.println("scope of the predicate "+hashSetElement.keySet());
-					break;
+
+			readPredicateScopeHashMap=(LinkedHashMap<String,LinkedHashSet<String>>) ois.readObject();
+			//saveOutputToFile(readPredicateScopeHashMap.toString(),"d:\\xx.txt");
+			//System.out.println("Scope for the predicate "+fileName+" is "+readPredicateScopeHashMap.get(fileName));
+			LinkedHashSet<String> scope=readPredicateScopeHashMap.get(predicateName);
+			System.out.println("Number of predicates in the file  "+predicateScopFile.getPath()+" is "+readPredicateScopeHashMap.size());
+			counter++;
+			for(int i=counter; i<filesPathArray.length;i++){
+				String predicateName1=filesPathArray[i].getName().replace(";", ":").replace("_", "/");
+				LinkedHashMap predicateScopeHashMap=new LinkedHashMap<String,LinkedHashSet<String>>();
+				System.out.println("The Value of the outer counter is "+counter+" and the value of the inner counter is "+i);
+				System.out.println("The File name is "+filesPathArray[i].getPath());
+				ObjectInputStream ois1 = new ObjectInputStream(new FileInputStream(filesPathArray[i].getPath()));
+				try{
+					predicateScopeHashMap=(LinkedHashMap<String,LinkedHashSet<String>>)ois1.readObject();
+					LinkedHashSet<String> scope1= (LinkedHashSet) predicateScopeHashMap.get(predicateName1);
+					//filesPathArray[i];
+					System.out.println("The Predicate name is "+predicateName1);
+					intersectScopes(predicateName,scope,predicateName1,scope1);
 				}
-				break;
+				catch (Exception EOFException ){
+					System.out.println("Problem in file "+filesPathArray[i].getPath());
+					System.out.println("The exception is "+EOFException.toString());
+
+				}
+
 			}
-			
-			break;
 
 		}
 
-		return readPredicateScopeHash;
+		return readPredicateScopeHashMap;
+	}
+
+	public void intersectScopes(String key1,LinkedHashSet<String> scope1,String key2, LinkedHashSet<String> scope2) throws IOException{
+
+		LinkedHashSet<String> intersectionHashSet=new LinkedHashSet<String>();
+		int precedenceCounte=0;
+		if (scope1.size()>=scope2.size()){
+
+			System.out.println("Case 1");
+
+			intersectionHashSet=new LinkedHashSet<String>(scope1);
+			System.out.println("Before rerain all intersectionHashSet.size()="+intersectionHashSet.size());
+
+			intersectionHashSet.retainAll(scope2);
+			System.out.println("intersectionHashSet.size()="+intersectionHashSet.size());
+			System.out.println("scope1.size()="+scope1.size());
+			System.out.println("scope2.size()="+scope2.size());
+			if(intersectionHashSet.size()==scope2.size()){
+				///key2 precede k1
+				System.out.println("____Case 1 The predicate "+key2+" precede "+key1);
+				saveOutputToFile("Case1 The predicate "+key2+" precede "+key1,"d:\\precedence.txt");
+				precedenceCounte++;
+			}
+			else{
+				System.out.println("Case 1 No precedency between "+key1+" and "+key2);
+			}
+
+		}
+		else{
+			System.out.println("Case 2");
+
+			intersectionHashSet=new LinkedHashSet<String>(scope2);
+			System.out.println("Before rerain all intersectionHashSet.size()="+intersectionHashSet.size());
+			intersectionHashSet.retainAll(scope1);
+			System.out.println("intersectionHashSet.size()="+intersectionHashSet.size());
+			System.out.println("scope1.size()="+scope1.size());
+			System.out.println("scope2.size()="+scope2.size());
+
+			if(intersectionHashSet.size()==scope1.size()){
+				///key2 precede k1
+				System.out.println("______Case2 The predicate "+key1+" precede "+key2);
+				saveOutputToFile("Case 2 The predicate "+key1+" precede "+key2,"d:\\precedence.txt");
+				precedenceCounte++;
+
+			}
+			else{
+				System.out.println("Case 2 No precedency between "+key1+" and "+key2);
+
+			}
+		}
+		System.out.println("Number for precedence counter "+precedenceCounte);
 	}
 
 	public void saveOutputToFile(String data,String fileName) throws IOException{
-		PrintWriter fstream = new PrintWriter(new FileWriter(fileName));
+		PrintWriter fstream = new PrintWriter(new FileWriter(fileName,true),true);
 		BufferedWriter out = new BufferedWriter(fstream);
 		out.write(data);
+		out.close();
 	}
 
 	public String getPredicateListFilePath() {
