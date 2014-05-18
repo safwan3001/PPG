@@ -91,7 +91,9 @@ public class test {
 		System.out.println("The intersectionHashSet value is "+intersectionHashSet);
 		System.out.println("The intersectionHashSet value is "+intersectionHashSet.retainAll(s1));
 
-    	//ObjectInputStream ois = new ObjectInputStream(new FileInputStream("d:/test.txt"));
+    	ObjectInputStream ois = new ObjectInputStream(new FileInputStream("d:\\predicateScope\\http;__www.w3.org_2003_01_geo_wgs84_pos#lat"));
+    	HashMap<String,HashSet<String>>predicateScopeHashMap=(HashMap<String,HashSet<String>>)ois.readObject();
+    	System.out.println(predicateScopeHashMap.get("http://www.w3.org/2003/01/geo/wgs84/pos#lat"));
     	
 		//String readHashSet=(String)ois.readObject();
 		//System.out.println(readHashSet);
