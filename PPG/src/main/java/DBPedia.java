@@ -14,9 +14,7 @@ import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.Set;
-
 import javax.swing.Timer;
-
 import com.hp.hpl.jena.ontology.OntModel;
 import com.hp.hpl.jena.query.Dataset ;
 import com.hp.hpl.jena.query.ReadWrite ;
@@ -180,7 +178,7 @@ public class DBPedia
 		for (File predicateScopFile: filesPathArray)
 		{
 			readPredicateScopeHashMap=new HashMap<String,HashSet<String>>();
-			System.out.println("---------------- Outer Loop begin ----------------");
+			System.out.println("---------------- Outer Loop begin ----------------"+counter);
 			System.out.println("Reading the file "+predicateScopFile.getPath());
 			System.out.println("File name is "+predicateScopFile.getName());
 			String predicateName=this.getPredicateNameFromFileName(predicateScopFile.getName());
@@ -204,7 +202,7 @@ public class DBPedia
 				System.out.println("The Predicate name is "+predicateName1);
 				this.intersectScopes(predicateName, scope, predicateName1, scope1);
 			}
-			System.out.println("---------------- Outer Loop finish ----------------");
+			System.out.println("---------------- Outer Loop finish ----------------"+counter);
 		}
 
 		return readPredicateScopeHashMap;
@@ -226,8 +224,10 @@ public class DBPedia
 			System.out.println("scope2.size()="+scope2.size());
 			if(intersectionHashSet.size()==scope2.size()){
 				///key2 precede k1
-				System.out.println("____Case 1 The predicate "+key2+" precede "+key1);
-				saveOutputToFile("Case1 The predicate "+key2+" precede "+key1,"d:\\precedence.txt");
+				System.out.println("____Case 1 The predicate "+key1+" precede "+key2);
+				saveOutputToFile("Case1 The predicate "+key1+" precede "+key2,"d:\\precedence.txt");
+				//{source: "Oracle", target: "Safwan", type: "suit"},
+				saveOutputToFile("{source: \""+key1+"\", target: \""+key2+"\", type:\"suit\" },\n","d:\\precedence.json");
 				precedenceCounte++;
 			}
 			else{
@@ -244,8 +244,9 @@ public class DBPedia
 			System.out.println("scope2.size()="+scope2.size());
 
 			if(intersectionHashSet.size()==scope1.size()){
-				System.out.println("______Case2 The predicate "+key1+" precede "+key2);
-				saveOutputToFile("Case 2 The predicate "+key1+" precede "+key2,"d:\\precedence.txt");
+				System.out.println("______Case2 The predicate "+key2+" precede "+key1);
+				saveOutputToFile("Case 2 The predicate "+key2+" precede "+key1,"d:\\precedence.txt");
+				saveOutputToFile("{source: \""+key2+"\", target: \""+key1+"\", type:\"suit\" },\n","d:\\precedence.json");
 				precedenceCounte++;
 			}
 			else{
