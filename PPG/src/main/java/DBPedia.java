@@ -43,6 +43,7 @@ public class DBPedia
 	private Dataset dataset;
 	private File predicateListFile;
 	private File predicateScopFile;
+	private int precedenceCount=0;
 
 	public DBPedia(String predicateListHashSetDirectory ,String predicateScopeHashSetDirectory,String DBDirectory){
 
@@ -168,7 +169,7 @@ public class DBPedia
 
 		@SuppressWarnings("unchecked")
 		HashMap<String,HashSet<String>> readPredicateScopeHashMap=null;
-		LinkedHashSet<String> modelPredicatesHashSet=readPredicate();
+		//LinkedHashSet<String> modelPredicatesHashSet=readPredicate();
 		//this.saveOutputToFile(modelPredicatesHashSet.toString(), "D:\\list.txt");
 
 		File[] filesPathArray=new File[this.getNumberOfPredicates()];
@@ -204,14 +205,14 @@ public class DBPedia
 			}
 			System.out.println("---------------- Outer Loop finish ----------------"+counter);
 		}
-
+		System.out.println("Number for precedence counter "+precedenceCount);
 		return readPredicateScopeHashMap;
 	}
 
 	public void intersectScopes(String key1,HashSet<String> scope1,String key2, HashSet<String> scope2) throws IOException{
 
 		LinkedHashSet<String> intersectionHashSet=new LinkedHashSet<String>();
-		int precedenceCounte=0;
+		//int precedenceCounte=0;
 		
 		if (scope1.size()>=scope2.size()){
 			
@@ -228,7 +229,7 @@ public class DBPedia
 				saveOutputToFile("Case1 The predicate "+key1+" precede "+key2,"d:\\precedence.txt");
 				//{source: "Oracle", target: "Safwan", type: "suit"},
 				saveOutputToFile("{source: \""+key1+"\", target: \""+key2+"\", type:\"suit\" },\n","d:\\precedence.json");
-				precedenceCounte++;
+				precedenceCount++;
 			}
 			else{
 				System.out.println("Case 1 No precedency between "+key1+" and "+key2);
@@ -247,14 +248,13 @@ public class DBPedia
 				System.out.println("______Case2 The predicate "+key2+" precede "+key1);
 				saveOutputToFile("Case 2 The predicate "+key2+" precede "+key1,"d:\\precedence.txt");
 				saveOutputToFile("{source: \""+key2+"\", target: \""+key1+"\", type:\"suit\" },\n","d:\\precedence.json");
-				precedenceCounte++;
+				precedenceCount++;
 			}
 			else{
 				System.out.println("Case 2 No precedency between "+key1+" and "+key2);
 
 			}
 		}
-		System.out.println("Number for precedence counter "+precedenceCounte);
 	}
 
 	public void saveOutputToFile(String data,String fileName) throws IOException{
