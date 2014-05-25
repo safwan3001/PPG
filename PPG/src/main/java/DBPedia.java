@@ -13,8 +13,11 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
+import java.util.NoSuchElementException;
 import java.util.Set;
+
 import javax.swing.Timer;
+
 import com.hp.hpl.jena.ontology.OntModel;
 import com.hp.hpl.jena.query.Dataset ;
 import com.hp.hpl.jena.query.ReadWrite ;
@@ -22,6 +25,7 @@ import com.hp.hpl.jena.rdf.model.InfModel;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
 import com.hp.hpl.jena.rdf.model.Property;
+import com.hp.hpl.jena.rdf.model.RDFNode;
 import com.hp.hpl.jena.rdf.model.ResIterator;
 import com.hp.hpl.jena.rdf.model.Resource;
 import com.hp.hpl.jena.rdf.model.StmtIterator;
@@ -82,6 +86,7 @@ public class DBPedia
 		return this.predicateStringHashSet;
 
 	}
+	
 	public void writePredicate() throws FileNotFoundException, IOException{
 
 		this.predicatePropertyHashSet=this.getModelPredicates(this.getModel());
@@ -262,6 +267,24 @@ public class DBPedia
 		BufferedWriter out = new BufferedWriter(fstream);
 		out.write(data);
 		out.close();
+	}
+	
+	public void testPredicatesValues() throws NoSuchElementException, IOException{
+		StmtIterator r=model.listStatements();
+		int resourceCounter=0;
+		int literalCounter=0;
+		while (r.hasNext()){
+			//saveOutputToFile(r.nextStatement().getObject().toString()+"\n","d:\\values.txt");
+			RDFNode n=r.nextStatement().getObject();
+			if (n.isLiteral()){
+				literalCounter++;
+			}
+			else if (n.isResource()){
+				resourceCounter++;
+			}
+		}
+		System.out.println("Number of literal values is "+literalCounter);
+		System.out.println("Number of resource values is "+resourceCounter);
 	}
 
 	public String generatePredicateFileName(String predicateName){

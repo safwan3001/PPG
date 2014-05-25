@@ -49,8 +49,8 @@ public class DBPediaTest {
 		//HashSet<HashMap<String,HashSet<String>>> predicateScope=dbPediaObject.readPredicateScope();
 		
 		
-		System.out.println("Number of predicates with scope is "+dbPediaObject.readPredicateScope().size());
-
+		//System.out.println("Number of predicates with scope is "+dbPediaObject.readPredicateScope().size());
+		dbPediaObject.testPredicatesValues();
 		dbPediaObject.closeDataSet();
 		
 		long endTime   = System.currentTimeMillis();
