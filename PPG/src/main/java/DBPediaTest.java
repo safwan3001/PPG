@@ -25,7 +25,7 @@ public class DBPediaTest {
 
 	public static void main(String[] args) throws FileNotFoundException, IOException, ClassNotFoundException 
 	{
-		DBPedia dbPediaObject=new DBPedia("d:\\predicateList","d:\\predicateScope","D:/TDB_Database");
+		DBPedia dbPediaObject=new DBPedia("d:\\predicateList","d:\\predicateScope","d:\\predicateValuesScope","d:\\TDB_Database");
 
 		long startTime = System.currentTimeMillis();	
 
@@ -50,7 +50,9 @@ public class DBPediaTest {
 		
 		
 		//System.out.println("Number of predicates with scope is "+dbPediaObject.readPredicateScope().size());
-		dbPediaObject.testPredicatesValues();
+		//dbPediaObject.testPredicatesValues();
+		//dbPediaObject.getPredicateValueScope();
+		dbPediaObject.readPredicateValueScope();
 		dbPediaObject.closeDataSet();
 		
 		long endTime   = System.currentTimeMillis();
